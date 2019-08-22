@@ -8,7 +8,7 @@ internal: "hard"
 
 # 後々DBをセットアップする必要あり
 startup: |
-  curl -s https://static.rust-lang.org/rustup.sh | sh
+  curl https://sh.rustup.rs -sSf | sh
   rustup install nightly
   rustup default nightly
   cargo --version
