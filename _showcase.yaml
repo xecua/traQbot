@@ -1,7 +1,5 @@
 type: runtime
 
-work_dir: /srv
-
 use_mariadb: true
 
 internal: "hard"

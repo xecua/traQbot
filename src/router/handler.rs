@@ -1,8 +1,13 @@
 use rocket::*;
 use rocket::http::Status;
 use rocket_contrib::json::*;
+use regex::Regex;
 
 use super::receiver::*;
+
+lazy_static!{
+    static ref TimeStampPattern: Regex = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*Z$").unwrap();
+}
 
 #[get("/")]
 pub fn index() -> &'static str {
@@ -12,7 +17,12 @@ pub fn index() -> &'static str {
 // PINGイベント
 #[post("/", data="<data>", rank=1)]
 pub fn ping_event(data: Json<Ping>) -> Status {
-    Status::NoContent
+    if TimeStampPattern.is_match(&data.eventTime) {
+        Status::NoContent
+    }
+    else {
+        Status::BadRequest
+    }
 } 
 
 // JOINEDイベント

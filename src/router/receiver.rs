@@ -1,11 +1,11 @@
 use serde_derive::Deserialize;
 use rocket::*;
-// use regex::Regex;
+use rocket::http::RawStr;
 
-
-#[derive(FromForm, Deserialize)]
+// FromFormValueとか使ってうまいことしたいけどできねぇ
+#[derive(Deserialize)]
 pub struct Ping {
-    eventTime: String // とりあえず。あとで正規表現マッチするようにする
+    pub eventTime: String 
 }
 
 #[derive(Deserialize)]
