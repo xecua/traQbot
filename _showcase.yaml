@@ -7,5 +7,6 @@ use_mariadb: true
 internal: "hard"
 
 # startupでDBをセットアップする必要あり
+# あとrustup override set nightlyも
 
 entrypoint: cargo run --release
