@@ -8,7 +8,7 @@ internal: "hard"
 
 # 後々DBをセットアップする必要あり
 startup: |
-  pacman -S rustup
+  yes | pacman -S rustup
   rustup install nightly
   rustup default nightly
   cargo --version
