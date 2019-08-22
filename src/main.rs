@@ -2,11 +2,13 @@
 
 #[macro_use] extern crate rocket;
 extern crate traqbot;
-use traqbot::route::*;
+use traqbot::router::handler::*;
 
 fn main() {
     rocket::ignite()
         .mount("/", routes![
-            index
+            index,
+            ping_event,
+            joined_left_event,
         ]).launch();
 }

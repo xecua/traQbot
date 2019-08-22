@@ -1,0 +1,14 @@
+type: runtime
+
+work_dir: /srv
+
+use_mariadb: true
+
+internal: "hard"
+
+# 後々DBをセットアップする必要あり
+startup: |
+  curl -s https://static.rust-lang.org/rustup.sh | sh -s -- --channel=nightly
+  cargo --version
+
+entrypoint: cargo run --release
