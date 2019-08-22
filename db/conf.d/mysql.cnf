@@ -1,0 +1,8 @@
+[mysqld]
+pid-file=/var/run/mysqld/mysqld.pid
+socket=/var/run/mysqld/mysqld.sock
+character-set-server=utf8mb4
+
+
+[client]
+default-character-set=utf8mb4

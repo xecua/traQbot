@@ -1,0 +1,27 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/conf.d:/etc/mysql/conf.d
+  server:
+    image: rust:latest
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - 8000:8000
+    links:
+      - mysql
+    command: cargo run
+
+
