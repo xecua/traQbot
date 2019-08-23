@@ -22,10 +22,11 @@ services:
     working_dir: /app
     ports:
       - "8000:8000"
+    environment:
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+      MARIADB_HOSTNAME: mysql
+      MARIADB_DATABASE: app
     links:
       - mysql:mysql
-    # environment:
-        # ROCKET_DATABASES: '{my_db={url="mysql://user:pass@mysql:3306/app"}}'
-    command: cargo run
-
-
+    entrypoint: sh ./entrypoint.sh

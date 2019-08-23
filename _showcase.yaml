@@ -9,7 +9,6 @@ startup: |
   yes | pacman -Sy rustup
   rustup install nightly
   rustup default nightly
-  export ROCKET_DATABASES='{my_db={url="mysql://$MARIADB_USER:$MARIADB_PASSWORD@$MARIADB_HOSTNAME/$MARIADB_DATABASE"}}''
   cargo --version
 
 entrypoint: cargo run --release
