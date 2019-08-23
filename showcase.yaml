@@ -1,0 +1,15 @@
+type: runtime
+
+use_mariadb: true
+
+internal: "hard"
+
+# 後々DBをセットアップする必要あり
+startup: |
+  yes | pacman -Sy rustup
+  rustup install nightly
+  rustup default nightly
+  export ROCKET_DATABASES="{mysql={url=\"mysql://$MARIADB_USER:$MARIADB_PASSWORD@$MARIADB_HOSTNAME/$MARIADB_DATABASE\"}}"
+  cargo --version
+
+entrypoint: cargo run --release
