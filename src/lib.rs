@@ -8,6 +8,9 @@
 #[macro_use] extern crate serde_json;
 #[macro_use] extern crate lazy_static;
 extern crate regex;
+extern crate reqwest;
+extern crate log;
+extern crate env_logger;
 
 pub mod router;
 pub mod database;

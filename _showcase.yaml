@@ -12,4 +12,4 @@ startup: |
   export ROCKET_DATABASES="{mysql={url=\"mysql://$MARIADB_USER:$MARIADB_PASSWORD@$MARIADB_HOSTNAME/$MARIADB_DATABASE\"}}"
   cargo --version
 
-entrypoint: cargo run --release
+entrypoint: ROCKET_ENV=prod cargo run --release

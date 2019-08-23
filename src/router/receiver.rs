@@ -24,3 +24,27 @@ pub struct Channel {
     updatedAt: String
 }
 
+#[derive(Deserialize)]
+pub struct Embed {
+    raw: String,
+    r#type: String,
+    id: String
+}
+
+#[derive(Deserialize)]
+pub struct Message {
+    id: String,
+    user: User,
+    channelId: String,
+    text: String,
+    plainText: String,
+    embedded: Vec<Embed>,
+    createdAt: String,
+    updatedAt: String
+}
+
+#[derive(Deserialize)]
+pub struct MessageCreated {
+    eventTime: String,
+    message: Message
+}
