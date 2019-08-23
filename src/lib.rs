@@ -7,6 +7,8 @@
 #[macro_use] extern crate serde_derive;
 #[macro_use] extern crate serde_json;
 #[macro_use] extern crate lazy_static;
+#[macro_use] extern crate diesel;
 extern crate regex;
 
 pub mod router;
+pub mod database;

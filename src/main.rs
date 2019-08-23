@@ -3,6 +3,7 @@
 #[macro_use] extern crate rocket;
 extern crate traqbot;
 use traqbot::router::handler::*;
+use traqbot::database::schema::Database;
 
 fn main() {
     rocket::ignite()
@@ -10,5 +11,7 @@ fn main() {
             index,
             ping_event,
             joined_left_event,
-        ]).launch();
+        ])
+        .attach(Database::fairing())
+        .launch();
 }
