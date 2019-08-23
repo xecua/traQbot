@@ -1,12 +1,8 @@
+#[allow(non_snake_case)]
 use serde_derive::Deserialize;
 use rocket::*;
 use rocket::http::RawStr;
 
-// FromFormValueとか使ってうまいことしたいけどできねぇ
-#[derive(Deserialize)]
-pub struct Ping {
-    pub eventTime: String 
-}
 
 #[derive(Deserialize)]
 pub struct User {
@@ -28,8 +24,3 @@ pub struct Channel {
     updatedAt: String
 }
 
-#[derive(Deserialize)]
-pub struct Channelevent {
-    eventTime: String,
-    channel: Channel
-}

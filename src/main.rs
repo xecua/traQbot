@@ -9,8 +9,7 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![
             index,
-            ping_event,
-            joined_left_event,
+            empty
         ])
         .attach(Database::fairing())
         .launch();
