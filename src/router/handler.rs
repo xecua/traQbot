@@ -6,7 +6,7 @@ use regex::Regex;
 use super::receiver::*;
 
 lazy_static!{
-    static ref TimeStampPattern: Regex = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*Z$").unwrap();
+    static ref TIME_STAMP_PATTERN: Regex = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d*Z$").unwrap();
 }
 
 #[get("/")]
@@ -17,7 +17,7 @@ pub fn index() -> &'static str {
 // PINGイベント
 #[post("/", data="<data>", rank=1)]
 pub fn ping_event(data: Json<Ping>) -> Status {
-    if TimeStampPattern.is_match(&data.eventTime) {
+    if TIME_STAMP_PATTERN.is_match(&data.eventTime) {
         Status::NoContent
     }
     else {

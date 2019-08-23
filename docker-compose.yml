@@ -9,19 +9,24 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: pass
     ports:
-      - 3306:3306
+      - "3306:3306"
     volumes:
+      - ./db/hosts.allow:/etc/hosts.allow
       - ./db/init:/docker-entrypoint-initdb.d
       - ./db/conf.d:/etc/mysql/conf.d
   server:
-    image: rustlang/rust:nightly-slim
+    image: rustlang/rust:nightly
+    restart: always
     volumes:
       - .:/app
     working_dir: /app
     ports:
       - "8000:8000"
+    environment:
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
+      MARIADB_HOSTNAME: mysql
+      MARIADB_DATABASE: app
     links:
-      - mysql
-    command: cargo run
-
-
+      - mysql:mysql
+    entrypoint: sh ./entrypoint.sh
