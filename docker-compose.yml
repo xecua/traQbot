@@ -15,7 +15,7 @@ services:
       - ./db/init:/docker-entrypoint-initdb.d
       - ./db/conf.d:/etc/mysql/conf.d
   server:
-    image: rustlang/rust:nightly
+    build: .
     volumes:
       - .:/app
     working_dir: /app

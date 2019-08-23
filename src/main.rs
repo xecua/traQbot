@@ -6,7 +6,7 @@ extern crate log;
 extern crate env_logger;
 extern crate traqbot;
 use traqbot::router::handler::*;
-use traqbot::database::schema::Database;
+use traqbot::database::Database;
 use std::env;
 
 fn main() {
@@ -16,7 +16,8 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![
             index,
-            empty
+            empty,
+            message
         ])
         .attach(Database::fairing())
         .launch();

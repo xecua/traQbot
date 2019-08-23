@@ -6,7 +6,7 @@ use reqwest::header::AUTHORIZATION;
 
 use super::receiver::*;
 use super::guards::*;
-use super::super::database::schema::Database;
+use super::super::database::Database;
 use super::super::database::operation::*;
 use log::{error, warn, info, debug};
 
@@ -17,7 +17,7 @@ lazy_static! {
 
 #[get("/")]
 pub fn index() -> &'static str {
-    "test ok"
+    "おいす〜"
 }
 
 // PING, JOINED, LEFTイベント
@@ -32,7 +32,7 @@ pub fn empty(header: Header) -> Status {
 
 // MESSAGE_CREATED
 #[post("/", data="<data>")]
-pub fn message(data: Json<Message>, header: Header) -> Status {
+pub fn message(data: Json<Message>, header: Header, conn: Database) -> Status {
     // メッセージ。 仮おきでクソ課題
     let mut body = HashMap::new();
     body.insert("text", "Fracture Ray[FTR] Pure Memory");
