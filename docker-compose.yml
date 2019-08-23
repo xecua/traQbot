@@ -11,6 +11,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - ./db/hosts.allow:/etc/hosts.allow
       - ./db/init:/docker-entrypoint-initdb.d
       - ./db/conf.d:/etc/mysql/conf.d
   server:
@@ -23,8 +24,8 @@ services:
       - "8000:8000"
     links:
       - mysql:mysql
-    environment:
-        ROCKET_DATABASES: '{my_db={url="mysql://user:pass@mysql:3306/app"}}'
+    # environment:
+        # ROCKET_DATABASES: '{my_db={url="mysql://user:pass@mysql:3306/app"}}'
     command: cargo run
 
 

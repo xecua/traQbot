@@ -1,4 +1,4 @@
 use rocket_contrib::databases::diesel;
 
-#[database("my_db")]
+#[database("mysql")]
 pub struct Database(diesel::MysqlConnection);
