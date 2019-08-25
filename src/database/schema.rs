@@ -1,18 +1,21 @@
-use diesel::sql_types::*;
-
 table! {
-    songs {
-        id -> Integer,
-        title -> Varchar,
-        past_difficulty -> Integer,
-        present_difficulty -> Integer,
-        future_difficulty -> Integer,
-    }
-}
-
-table! {
-    aprilfools {
+    aprilfools (id) {
         id -> Integer,
         title -> Varchar,
     }
 }
+
+table! {
+    songs (id) {
+        id -> Integer,
+        title -> Varchar,
+        past_difficulty -> Nullable<Integer>,
+        present_difficulty -> Nullable<Integer>,
+        future_difficulty -> Nullable<Integer>,
+    }
+}
+
+allow_tables_to_appear_in_same_query!(
+    aprilfools,
+    songs,
+);

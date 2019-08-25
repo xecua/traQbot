@@ -2,6 +2,7 @@ use super::Database;
 use diesel::prelude::*;
 use diesel::result::Error;
 use rocket_contrib::databases::diesel::MysqlConnection;
+use log::{error, warn, info, debug};
 
 pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
     use super::schema::songs::dsl::*;
@@ -9,6 +10,8 @@ pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
     use rand::seq::SliceRandom;
 
     let res = songs.load::<Song>(conn)?;
+    
+    info!("res: {:?}", res);
     
     match res.choose(&mut rand::thread_rng()) {
         Some(song) => Ok(song.title.clone()),
