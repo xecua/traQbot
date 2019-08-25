@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE songs (
+CREATE TABLE IF NOT EXISTS songs (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     past_difficulty INTEGER,
@@ -7,7 +7,7 @@ CREATE TABLE songs (
     future_difficulty INTEGER, -- 9+ -> 10, 10 -> 11とする
 );
 
-CREATE TABLE aprilfools (
+CREATE TABLE IF NOT EXISTS aprilfools (
     id INTEGER AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL
 );

@@ -1,0 +1,1 @@
+INSERT INTO test.dummy (txt) VALUES ("hogehoge");

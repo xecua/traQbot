@@ -7,7 +7,6 @@ use reqwest::header::AUTHORIZATION;
 use super::receiver::*;
 use super::guards::*;
 use super::super::database::Database;
-use super::super::database::operation::*;
 use log::{error, warn, info, debug};
 
 lazy_static! {
@@ -32,13 +31,20 @@ pub fn empty(header: Header) -> Status {
 
 // MESSAGE_CREATED
 #[post("/", data="<data>", rank=2)]
-pub fn message(data: Json<Message>, header: Header, conn: Database) -> Status {
+pub fn message(data: Json<MessageCreated>, header: Header, conn: Database) -> Status {
+    use super::super::database::operation::get_random_one;
+    use super::super::utils::make_mention;
+    
     // メッセージ。 仮おきでクソ課題
     let mut body = HashMap::new();
-    body.insert("text", "Fracture Ray[FTR] Pure Memory");
+    if let Ok(title) = get_random_one(&*conn) {
+        body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), title));
+    } else {
+        body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), String::from("曲が入ってねぇ")));
+    }
 
-    // チャンネル。仮おきでgps/times/xecua
-    let channel_id = "55095d85-7066-4ac6-9a99-8655ef0cac92";
+    // チャンネル
+    let channel_id = data.message.channelId.clone();
     let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
 
 

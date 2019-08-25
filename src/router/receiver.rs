@@ -1,4 +1,4 @@
-#[allow(non_snake_case)]
+#![allow(non_snake_case)]
 use serde_derive::Deserialize;
 use rocket::*;
 use rocket::http::RawStr;
@@ -6,8 +6,8 @@ use rocket::http::RawStr;
 
 #[derive(Deserialize)]
 pub struct User {
-    id: String,
-    name: String,
+    pub id: String,
+    pub name: String,
     displayName: String,
     iconId: String,
     bot: bool
@@ -34,8 +34,8 @@ pub struct Embed {
 #[derive(Deserialize)]
 pub struct Message {
     id: String,
-    user: User,
-    channelId: String,
+    pub user: User,
+    pub channelId: String,
     text: String,
     plainText: String,
     embedded: Vec<Embed>,
@@ -46,5 +46,5 @@ pub struct Message {
 #[derive(Deserialize)]
 pub struct MessageCreated {
     eventTime: String,
-    message: Message
+    pub message: Message
 }
