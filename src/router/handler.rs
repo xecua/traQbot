@@ -49,20 +49,20 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     
 
     // チャンネル
-    // let channel_id = data.message.channelId.clone();
-    // let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
+    let channel_id = data.message.channelId.clone();
+    let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
 
 
     // 投げる
-    // let client = reqwest::Client::new();
-    // let res = client.post(endpoint)
-    //     .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-    //     .json(&body)
-    //     .send();
-    // match res {
-    //     Ok(_) => info!("Succeeded in post"),
-    //     Err(_) => warn!("Failed to post")
-    // };
+    let client = reqwest::Client::new();
+    let res = client.post(endpoint)
+        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+        .json(&body)
+        .send();
+    match res {
+        Ok(_) => info!("Succeeded in post"),
+        Err(_) => warn!("Failed to post")
+    };
     
     
     Status::NoContent
