@@ -19,50 +19,51 @@ pub fn index() -> &'static str {
     "おいす〜"
 }
 
-// PING, JOINED, LEFTイベント
-#[post("/", rank=1)]
-pub fn empty(header: Header) -> Status {
-    let Header(event, _) = header;
-    match &*event {
-        "PING" | "JOINED" | "LEFT" => Status::NoContent,
-        _ => Status::BadRequest
-    }
+// PING
+#[post("/", data="<_data>", rank=1)]
+pub fn ping(_header: Header, _ping_header: PingHeader, _data: Json<Ping>,) -> Status {
+    Status::NoContent
 } 
 
+// JOINED, LEFT
+#[post("/", data="<_data>", rank=2)]
+pub fn join_left(_header: Header, _join_left_header: JoinLeftHeader, _data: Json<JoinLeft>) -> Status {
+    Status::NoContent
+}
+
 // MESSAGE_CREATED
-#[post("/", data="<data>", rank=2)]
-pub fn message(data: Json<MessageCreated>, header: Header, conn: Database) -> Status {
+#[post("/", data="<data>", rank=3)]
+pub fn message(_header: Header, _message_header: MessageHeader, data: Json<MessageCreated>, conn: Database) -> Status {
     use super::super::database::operation::get_random_one;
     use super::super::utils::make_mention;
     
     // メッセージ。 仮おきでクソ課題
     let mut body = HashMap::new();
     if let Ok(title) = get_random_one(&*conn) {
+        info!("{}", title);
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), title));
     } else {
+        warn!("何もない");
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), String::from("曲が入ってねぇ")));
     }
+    
 
     // チャンネル
-    let channel_id = data.message.channelId.clone();
-    let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
+    // let channel_id = data.message.channelId.clone();
+    // let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
 
 
     // 投げる
-    let client = reqwest::Client::new();
-    let res = client.post(endpoint)
-        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-        .json(&body)
-        .send();
-    match res {
-        Ok(_) => info!("Succeeded in post"),
-        Err(_) => warn!("Failed to post")
-    };
+    // let client = reqwest::Client::new();
+    // let res = client.post(endpoint)
+    //     .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+    //     .json(&body)
+    //     .send();
+    // match res {
+    //     Ok(_) => info!("Succeeded in post"),
+    //     Err(_) => warn!("Failed to post")
+    // };
     
     
-    let Header(event, _) = header;
-    match &*event {
-        "MESSAGE_CREATED" => Status::NoContent,
-        _ => Status::BadRequest
-    }
+    Status::NoContent
 }

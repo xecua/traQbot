@@ -16,7 +16,8 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![
             index,
-            empty,
+            ping,
+            join_left,
             message
         ])
         .attach(Database::fairing())

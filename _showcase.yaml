@@ -4,7 +4,6 @@ use_mariadb: true
 
 internal: "hard"
 
-# 後々DBをセットアップする必要あり
 startup: |
   pacman -Sy rustup --noconfirm
   rustup default nightly

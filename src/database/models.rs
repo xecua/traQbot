@@ -1,6 +1,6 @@
 use diesel::prelude::*;
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Debug)]
 pub struct Song {
     pub id: i32,
     pub title: String,
@@ -9,7 +9,7 @@ pub struct Song {
     pub future_difficulty: i32
 }
 
-#[derive(Serialize, Deserialize, Queryable)]
+#[derive(Serialize, Deserialize, Queryable, Debug)]
 pub struct Aprilfool {
     pub id: i32,
     pub title: String

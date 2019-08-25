@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 use serde_derive::Deserialize;
 use rocket::*;
 use rocket::http::RawStr;
@@ -41,6 +42,17 @@ pub struct Message {
     embedded: Vec<Embed>,
     createdAt: String,
     updatedAt: String
+}
+
+#[derive(Deserialize)]
+pub struct Ping {
+    eventTime: String
+}
+
+#[derive(Deserialize)]
+pub struct JoinLeft {
+    eventTime: String,
+    channel: Channel
 }
 
 #[derive(Deserialize)]
