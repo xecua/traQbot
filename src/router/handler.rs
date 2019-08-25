@@ -21,7 +21,7 @@ pub fn index() -> &'static str {
 }
 
 // PING, JOINED, LEFTイベント
-#[post("/")]
+#[post("/", rank=1)]
 pub fn empty(header: Header) -> Status {
     let Header(event, _) = header;
     match &*event {
@@ -31,7 +31,7 @@ pub fn empty(header: Header) -> Status {
 } 
 
 // MESSAGE_CREATED
-#[post("/", data="<data>")]
+#[post("/", data="<data>", rank=2)]
 pub fn message(data: Json<Message>, header: Header, conn: Database) -> Status {
     // メッセージ。 仮おきでクソ課題
     let mut body = HashMap::new();

@@ -1,13 +1,17 @@
 use super::Database;
+use diesel::prelude::*;
 use diesel::result::Error;
+use rocket_contrib::databases::diesel::MysqlConnection;
 
-pub fn get_one(conn: &Database) -> Result<String, Error> {
-    use schema::songs::dsl::*;
+pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
+    use super::schema::songs::dsl::*;
+    use super::models::Song;
+    use rand::seq::SliceRandom;
 
-    let res = songs.load::<(i32, String, i32, i32, i32)>(&conn)?;
+    let res = songs.load::<Song>(conn)?;
     
-    match rand::seq::IteratorRandom(res) {
-        Some(song) => song.title,
-        None => ""
+    match res.choose(&mut rand::thread_rng()) {
+        Some(song) => Ok(song.title.clone()),
+        None => Err(Error::NotFound)
     }
 }

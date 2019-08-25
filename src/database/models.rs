@@ -1,3 +1,5 @@
+use diesel::prelude::*;
+
 #[derive(Serialize, Deserialize, Queryable)]
 pub struct Song {
     pub id: i32,
