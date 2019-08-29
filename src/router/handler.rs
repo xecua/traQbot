@@ -46,12 +46,10 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
         warn!("何もない");
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), String::from("曲が入ってねぇ")));
     }
-    
 
     // チャンネル
     let channel_id = data.message.channelId.clone();
-    let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/channels/{}/messages", channel_id)).unwrap();
-
+    let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/api/1.0/channels/{}/messages", channel_id)).unwrap();
 
     // 投げる
     let client = reqwest::Client::new();
@@ -59,11 +57,11 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
         .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
         .json(&body)
         .send();
+
     match res {
-        Ok(_) => info!("Succeeded in post"),
+        Ok(resp) => info!("Sending was succeeded. Here's response code: {}", resp.status().as_u16()),
         Err(_) => warn!("Failed to post")
     };
-    
     
     Status::NoContent
 }
