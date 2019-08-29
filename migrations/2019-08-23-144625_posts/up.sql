@@ -2,9 +2,9 @@
 CREATE TABLE IF NOT EXISTS songs (
     id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    past_difficulty NOT NULL INTEGER,
-    present_difficulty NOT NULL INTEGER,
-    future_difficulty NOT NULL INTEGER, -- 9+ -> 10, 10 -> 11とする
+    past_difficulty INTEGER,
+    present_difficulty INTEGER,
+    future_difficulty INTEGER, -- 9+ -> 10, 10 -> 11とする
 );
 
 CREATE TABLE IF NOT EXISTS aprilfools (
