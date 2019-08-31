@@ -4,6 +4,7 @@ use rocket_contrib::json::*;
 use std::collections::HashMap;
 use reqwest::header::AUTHORIZATION;
 
+use super::BASE_URL;
 use super::receiver::*;
 use super::guards::*;
 use super::super::database::Database;
@@ -37,7 +38,7 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     use super::super::database::operation::get_random_one;
     use super::super::utils::make_mention;
     
-    // メッセージ。 仮おきでクソ課題
+    // 投稿するメッセージ
     let mut body = HashMap::new();
     if let Ok(title) = get_random_one(&*conn) {
         info!("{}", title);
@@ -49,7 +50,7 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
 
     // チャンネル
     let channel_id = data.message.channelId.clone();
-    let endpoint = reqwest::Url::parse(&format!("https://q.trap.jp/api/1.0/channels/{}/messages", channel_id)).unwrap();
+    let endpoint = reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
 
     // 投げる
     let client = reqwest::Client::new();

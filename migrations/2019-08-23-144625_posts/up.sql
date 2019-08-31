@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS songs (
     title VARCHAR(255) NOT NULL,
     past_difficulty INTEGER,
     present_difficulty INTEGER,
-    future_difficulty INTEGER, -- 9+ -> 10, 10 -> 11とする
+    future_difficulty INTEGER -- 9+ -> 10, 10 -> 11とする
 );
 
 CREATE TABLE IF NOT EXISTS aprilfools (

@@ -3,4 +3,4 @@ export DATABASE_URL="mysql://$MARIADB_USER:$MARIADB_PASSWORD@$MARIADB_HOSTNAME/$
 
 diesel migration run
 
-RUST_BACKTRACE=1 cargo run
+cargo run --release
