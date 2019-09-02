@@ -1,4 +1,4 @@
-pub const DIFFICULTY  [&'static str; 3] = [
+pub const DIFFICULTY: [&'static str; 3] = [
     "Past", "Present", "Future"
 ];
 
