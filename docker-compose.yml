@@ -9,6 +9,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - ./db/backup:/var/lib/mysql
       - ./db/hosts.allow:/etc/hosts.allow
       - ./db/conf.d:/etc/mysql/conf.d
   server:
