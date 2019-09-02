@@ -37,11 +37,17 @@ pub fn join_left(_header: Header, _join_left_header: JoinLeftHeader, _data: Json
 pub fn message(_header: Header, _message_header: MessageHeader, data: Json<MessageCreated>, conn: Database) -> Status {
     use super::super::database::operation::get_random_one;
     use super::super::utils::make_mention;
-    
+    use rand::seq::SliceRandom;
+    use super::super::constants::arcaea::{DIFFICULTY, ODAI};
+
     // 投稿するメッセージ
     let mut body = HashMap::new();
     if let Ok(title) = get_random_one(&*conn) {
-        body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), title));
+        let mut rng = rand::thread_rng();
+        let dif = DIFFICULTY.choose(&mut rng).unwrap();
+        let task = ODAI.choose(&mut rng).unwrap();
+
+        body.insert("text", format!("{} {} {}を{}", make_mention(&data.message.user.name, &data.message.user.id), title, dif, task));
     } else {
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), String::from("曲が入ってねぇ")));
     }

@@ -7,7 +7,6 @@ extern crate env_logger;
 extern crate traqbot;
 use traqbot::router::handler::*;
 use traqbot::database::Database;
-use std::env;
 
 fn main() {
     env_logger::init();
