@@ -12,7 +12,6 @@ services:
       - "3306:3306"
     volumes:
       - ./db/hosts.allow:/etc/hosts.allow
-      - ./db/init:/docker-entrypoint-initdb.d
       - ./db/conf.d:/etc/mysql/conf.d
   server:
     build: .

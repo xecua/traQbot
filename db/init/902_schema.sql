@@ -1,4 +1,0 @@
-CREATE TABLE test.dummy (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    txt VARCHAR(32) NOT NULL
-);

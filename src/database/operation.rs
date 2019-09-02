@@ -11,8 +11,6 @@ pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
 
     let res = songs.load::<Song>(conn)?;
     
-    info!("res: {:?}", res);
-    
     match res.choose(&mut rand::thread_rng()) {
         Some(song) => Ok(song.title.clone()),
         None => Err(Error::NotFound)

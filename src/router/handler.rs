@@ -41,10 +41,8 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     // 投稿するメッセージ
     let mut body = HashMap::new();
     if let Ok(title) = get_random_one(&*conn) {
-        info!("{}", title);
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), title));
     } else {
-        warn!("何もない");
         body.insert("text", format!("{} {}", make_mention(&data.message.user.name, &data.message.user.id), String::from("曲が入ってねぇ")));
     }
 
