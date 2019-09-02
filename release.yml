@@ -1,19 +1,5 @@
 version: '3'
 services:
-  mysql:
-    image: mariadb:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: app
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./db/hosts.allow:/etc/hosts.allow
-      - ./db/init:/docker-entrypoint-initdb.d
-      - ./db/conf.d:/etc/mysql/conf.d
   server:
     build: .
     volumes:
@@ -22,11 +8,4 @@ services:
     ports:
       - "8000:8000"
     env_file: .env/server.env
-    environment:
-      MARIADB_USER: user
-      MARIADB_PASSWORD: pass
-      MARIADB_HOSTNAME: mysql
-      MARIADB_DATABASE: app
-    links:
-      - mysql:mysql
     entrypoint: sh ./release.sh
