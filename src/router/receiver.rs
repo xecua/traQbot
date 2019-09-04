@@ -38,7 +38,7 @@ pub struct Message {
     pub user: User,
     pub channelId: String,
     text: String,
-    plainText: String,
+    pub plainText: String,
     embedded: Vec<Embed>,
     createdAt: String,
     updatedAt: String
