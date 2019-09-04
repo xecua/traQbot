@@ -6,10 +6,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
     ports:
       - "3306:3306"
     volumes:
-      - ./db/backup:/var/lib/mysql
       - ./db/hosts.allow:/etc/hosts.allow
       - ./db/conf.d:/etc/mysql/conf.d
   server:
@@ -21,8 +22,8 @@ services:
       - "8000:8000"
     env_file: .env/server.env
     environment:
-      MARIADB_USER: root
-      MARIADB_PASSWORD: root
+      MARIADB_USER: user
+      MARIADB_PASSWORD: pass
       MARIADB_HOSTNAME: mysql
       MARIADB_DATABASE: app
     links:
