@@ -40,35 +40,34 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     // 投稿するメッセージ
     let mut body = HashMap::new();
     
-    let command = findCommand(&data.message.plainText);
+    let command = find_command(&data.message.plainText);
     match command {
         Some(Command::Help) => {
             body.insert("text", HELP_TEXT.to_string());
         },
         Some(Command::Random) => {
-            body.insert("text", randomChoice(&data, &conn));
+            body.insert("text", random_choice(&data, &conn));
         },
         None => {
             return Status::NoContent;
         }
     }
     
-    // // チャンネル
-    // let channel_id = data.message.channelId.clone();
-    // let endpoint = reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
+    // チャンネル
+    let channel_id = data.message.channelId.clone();
+    let endpoint = reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
 
-    // // 投げる
-    // let client = reqwest::Client::new();
-    // let res = client.post(endpoint)
-    //     .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-    //     .json(&body)
-    //     .send();
+    // 投げる
+    let client = reqwest::Client::new();
+    let res = client.post(endpoint)
+        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+        .json(&body)
+        .send();
 
-    // match res {
-    //     Ok(resp) => info!("Sending was succeeded. Here's response code: {}", resp.status().as_u16()),
-    //     Err(_) => warn!("Failed to post")
-    // };
-    debug!("{:?}", body.get("text"));
+    match res {
+        Ok(resp) => info!("Sending was succeeded. Here's response code: {}", resp.status().as_u16()),
+        Err(_) => warn!("Failed to post")
+    };
     
     Status::NoContent
 }
