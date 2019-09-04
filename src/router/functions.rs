@@ -7,10 +7,10 @@ pub enum Command {
 }
 
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
-pub fn find_command(plainText: &str) -> Option<Command> {
+pub fn find_command(plain_text: &str) -> Option<Command> {
     use Command::*;
     
-    let mut terms = plainText.split_whitespace();
+    let mut terms = plain_text.split_whitespace();
     
     match terms.next() {
         Some("@BOT_xecua_odai") => {
