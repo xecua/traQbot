@@ -6,5 +6,6 @@ services:
       - .:/app
     working_dir: /app
     network_mode: host
+    restart: always
     env_file: .env/server.env
     entrypoint: sh ./release.sh
