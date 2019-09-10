@@ -40,13 +40,13 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     // 投稿するメッセージ
     let mut body = HashMap::new();
     
-    let command = find_command(&data.message.plainText);
+    let command = parse_command(&data.message.plainText);
     match command {
         Some(Command::Help) => {
             body.insert("text", HELP_TEXT.to_string());
         },
-        Some(Command::Random) => {
-            body.insert("text", random_choice(&data, &conn));
+        Some(Command::Random(terms)) => {
+            body.insert("text", random_choice(terms, &data, &conn));
         },
         None => {
             return Status::NoContent;
