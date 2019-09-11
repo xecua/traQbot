@@ -43,6 +43,7 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 スラッシュコマンド形式での投稿を行うと該当する内容を実行します(リプライしてもしなくてもいいです あとリプライのときはスラッシュなくてもいいです)
 + help : このヘルプを出します
 + random : 全曲全譜面から適当にお題を出します
+    + さらに、スペース区切りで難易度値(1~10,9+)を指定すると、その中からのみ出題します
 ## :shiyourei_shi::shiyourei_you::shiyourei_rei:
 + `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
 + `/random` と投稿すると、適当にお題を出します
@@ -108,44 +109,50 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             }
         }
         
-        if let Ok(song) = get_random_one_with_option(&*conn, &options) {
-            let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
+        match get_random_one_with_option(&*conn, &options) {
+            Ok(song) => {
+                let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
 
-            format!(
-                "{} {} {}を{}",
-                make_mention(&data.message.user.name, &data.message.user.id),
-                song.title,
-                song.difficulty,
-                task
-            )
-        } else {
-            format!(
-                "{} {}",
-                make_mention(&data.message.user.name, &data.message.user.id),
-                String::from("曲が入ってねぇ")
-            )
+                format!(
+                    "{} {} {}を{}",
+                    make_mention(&data.message.user.name, &data.message.user.id),
+                    song.title,
+                    song.difficulty,
+                    task
+                )
+            }
+            Err(e) => {
+                format!(
+                    "{} {}",
+                    make_mention(&data.message.user.name, &data.message.user.id),
+                    e
+                )
+            }
         }
         
     }
     else {
-        if let Ok(title) = get_random_one(&*conn) {
-            let mut rng = rand::thread_rng();
-            let dif = DIFFICULTY.choose(&mut rng).unwrap();
-            let task = ODAI.choose(&mut rng).unwrap();
+        match get_random_one(&*conn) {
+            Ok(title) => {
+                let mut rng = rand::thread_rng();
+                let dif = DIFFICULTY.choose(&mut rng).unwrap();
+                let task = ODAI.choose(&mut rng).unwrap();
 
-            format!(
-                "{} {} {}を{}",
-                make_mention(&data.message.user.name, &data.message.user.id),
-                title,
-                dif,
-                task
-            )
-        } else {
-            format!(
-                "{} {}",
-                make_mention(&data.message.user.name, &data.message.user.id),
-                String::from("曲が入ってねぇ")
-            )
+                format!(
+                    "{} {} {}を{}",
+                    make_mention(&data.message.user.name, &data.message.user.id),
+                    title,
+                    dif,
+                    task
+                )
+            }
+            Err(e) => {
+                format!(
+                    "{} {}",
+                    make_mention(&data.message.user.name, &data.message.user.id),
+                    e
+                )
+            }
         }
     }
 }
