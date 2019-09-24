@@ -47,8 +47,8 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 ## :shiyourei_shi::shiyourei_you::shiyourei_rei:
 + `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
 + `/random` と投稿すると、適当にお題を出します
-## 注意点
-+ このBotは現状このチャンネル(#gps/times/xecua)しか監視していませんし@BOT_toki_testみたいに有能じゃないのでなんかしたらそこも見始めるとかないです
+## 直近のアップデート: v1.1.1
++ Mirzamを追加
 "#;
 
 pub struct RandomOption {
