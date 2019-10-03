@@ -1,5 +1,6 @@
 use rocket::*;
 use rocket::http::Status;
+use rocket::response::NamedFile;
 use rocket_contrib::json::*;
 use std::collections::HashMap;
 use reqwest::header::AUTHORIZATION;
@@ -16,8 +17,8 @@ lazy_static! {
 
 
 #[get("/")]
-pub fn index() -> &'static str {
-    "おいす〜"
+pub fn index() -> std::io::Result<NamedFile> {
+    NamedFile::open("static/index.html")
 }
 
 // PING

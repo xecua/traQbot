@@ -1,6 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] extern crate rocket;
+extern crate rocket_contrib;
 
 extern crate log;
 extern crate env_logger;
@@ -18,6 +19,7 @@ fn main() {
             join_left,
             message
         ])
+        .mount("/static", rocket_contrib::serve::StaticFiles::from("static"))
         .attach(Database::fairing())
         .launch();
 }
