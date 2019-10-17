@@ -1,14 +1,14 @@
 pub const DIFFICULTY: [&'static str; 3] = [
-    "Past", "Present", "Future"
+    "PAST", "PRESENT", "FUTURE"
 ];
 
 pub const ODAI: [&'static str; 8] = [
-    "ハードクリア",
-    "AA取得",
-    "LOST20未満でクリア",
-    "EX取得",
-    "9950000点以上",
-    "Full Recall",
-    "Pure Memory",
-    "理論値"
+    "HARDモードでTRACK COMPLETE",
+    "AA(9500000点以上)達成",
+    "LOST20未満(パートナー: パンドラネメシス)でTRACK COMPLETE",
+    "EX(9800000点以上)達成",
+    "9950000点以上達成",
+    "FULL RECALL達成",
+    "PURE MEMORY達成",
+    "理論値達成"
 ];

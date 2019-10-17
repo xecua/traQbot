@@ -47,8 +47,9 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 ## :shiyourei_shi::shiyourei_you::shiyourei_rei:
 + `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
 + `/random` と投稿すると、適当にお題を出します
-## 直近のアップデート: v1.1.1
-+ Mirzamを追加
+## 直近のアップデート: v1.1.2
++ Diode, FREEF4LL, GLORY:ROADを追加
++ 一部文言を変更
 "#;
 
 pub struct RandomOption {
@@ -101,11 +102,11 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             } else if option == "10" {
                 options.levels.push(11);
             } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(String::from("Past"));
+                options.difficulties.push(String::from("PAST"));
             } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(String::from("Present"));
+                options.difficulties.push(String::from("PRESENT"));
             } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(String::from("Future"));
+                options.difficulties.push(String::from("FUTURE"));
             }
         }
         
@@ -114,7 +115,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
 
                 format!(
-                    "{} {} {}を{}",
+                    "『{}』 {} {}を{}",
                     make_mention(&data.message.user.name, &data.message.user.id),
                     song.title,
                     song.difficulty,
@@ -139,7 +140,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rng).unwrap();
 
                 format!(
-                    "{} {} {}を{}",
+                    "『{}』 {} {}を{}",
                     make_mention(&data.message.user.name, &data.message.user.id),
                     title,
                     dif,

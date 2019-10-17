@@ -39,13 +39,13 @@ pub fn get_random_one_with_option(conn: &MysqlConnection, option: &RandomOption)
         Some(song) => {
             let mut d: Vec<String> = Vec::new();
             if option.levels.contains(&song.past_difficulty.unwrap()) {
-                d.push(String::from("Past"));
+                d.push(String::from("PAST"));
             }
             if option.levels.contains(&song.present_difficulty.unwrap()) {
-                d.push(String::from("Present"));
+                d.push(String::from("PRESENT"));
             }
             if option.levels.contains(&song.future_difficulty.unwrap()) {
-                d.push(String::from("Future"));
+                d.push(String::from("FUTURE"));
             }
             
             match d.choose(&mut rng) {
