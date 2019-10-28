@@ -48,7 +48,7 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 + `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
 + `/random` と投稿すると、適当にお題を出します
 ## 直近のアップデート: v1.1.2
-+ Diode, FREEF4LL, GLORY:ROADを追加
++ Diode, FREEF4LL, GLORY:ROAD, Monochrome Princess, Heavenly carelessを追加
 + 一部文言を変更
 "#;
 
