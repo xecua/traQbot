@@ -9,9 +9,9 @@ pub enum Command {
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.split_whitespace();
+    let mut terms = plain_text.to_lowercase().split_whitespace();     //ケースインセンシティブ化　全て小文字に直してから処理しています
     match terms.next() {
-        Some("@BOT_xecua_odai") => {
+        Some("@bot_xecua_odai") => {
             let command = terms.next();
             if command == None {
                 return None;
