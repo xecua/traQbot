@@ -100,11 +100,11 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 options.levels.push(10);
             } else if option == "10" {
                 options.levels.push(11);
-            } else if "past" == option || "pst" == option {     // いままで "past" == eq_ignore...(&option) で strと&strの比較による型エラーを吐いていた…？
+            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {  //ここは未実装なのでそのまま
                 options.difficulties.push(String::from("PAST"));
-            } else if "present" == option || "prs" == option {
+            } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
                 options.difficulties.push(String::from("PRESENT"));
-            } else if "future" == option || "ftr" == option {
+            } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
                 options.difficulties.push(String::from("FUTURE"));
             }
         }
