@@ -107,7 +107,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
 
                 format!(
-                    "『{}』 {} {}を{}",
+                    "{} 『{}』 {}を{}",
                     make_mention(&data.message.user.name, &data.message.user.id),
                     song.title,
                     song.difficulty,
