@@ -17,7 +17,7 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
                 return None;
             }
             let command = command.unwrap();
-            if command == "help" {      //お題を要求するために叩いていたコマンドのスラッシュの有無を論理和を使わなくてすんだので変更 　以下同様に l22, l29, l31 ,l103 ,l105 ,l107
+            if command == "help" {      //お題を要求するために叩いていたコマンドのスラッシュの有無を論理和を使わなくてすんだので変更 　以下同様に l22, l29, l31
                 Some(Help)
             } else if command == "random" {
                 Some(Random(terms.map(|x| x.to_string()).collect()))
