@@ -100,7 +100,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 options.levels.push(10);
             } else if option == "10" {
                 options.levels.push(11);
-            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {  //ここは未実装なのでそのまま
+            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {  //ここは未実装　この機能欲しい
                 options.difficulties.push(String::from("PAST"));
             } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
                 options.difficulties.push(String::from("PRESENT"));
