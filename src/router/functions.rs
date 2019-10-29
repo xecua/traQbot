@@ -9,7 +9,7 @@ pub enum Command {
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.to_lowercase().split_whitespace();     //ケースインセンシティブ化　全て小文字に直してから処理しています
+    let mut terms=plain_text.split_whitespace().map(|x| x.to_lowercase().replace("/",""));     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
     match terms.next() {
         Some("@bot_xecua_odai") => {
             let command = terms.next();
@@ -17,19 +17,18 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
                 return None;
             }
             let command = command.unwrap();
-            if command.eq_ignore_ascii_case("help") || command.eq_ignore_ascii_case("/help") {
+            if command == "help" {      //お題を要求するために叩いていたコマンドのスラッシュの有無を論理和を使わなくてすんだので変更 　以下同様に l22, l29, l31 ,l103 ,l105 ,l107
                 Some(Help)
-            } else if command.eq_ignore_ascii_case("random")
-                || command.eq_ignore_ascii_case("/random") {
+            } else if command == "random" {
                 Some(Random(terms.map(|x| x.to_string()).collect()))
             } else {
                 None
             }
         }
         Some(command) => {
-            if command.eq_ignore_ascii_case("/help") {
+            if command == "help" {
                 Some(Help)
-            } else if command.eq_ignore_ascii_case("/random") {
+            } else if command == "random" {
                 Some(Random(terms.map(|x| x.to_string()).collect()))
             } else {
                 None
@@ -101,11 +100,11 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 options.levels.push(10);
             } else if option == "10" {
                 options.levels.push(11);
-            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {
+            } else if "past" == option || "pst" == option {     // いままで "past" == eq_ignore...(&option) で strと&strの比較による型エラーを吐いていた…？
                 options.difficulties.push(String::from("PAST"));
-            } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
+            } else if "present" == option || "prs" == option {
                 options.difficulties.push(String::from("PRESENT"));
-            } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
+            } else if "future" == option || "ftr" == option {
                 options.difficulties.push(String::from("FUTURE"));
             }
         }
