@@ -1,6 +1,7 @@
 use super::super::database::Database;
 use super::receiver::*;
 
+#[derive(PartialEq,Debug)] // for debug/test
 pub enum Command {
     Help,
     Random(Vec<String>),
@@ -9,32 +10,24 @@ pub enum Command {
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms=plain_text.split_whitespace().map(|x| x.to_lowercase().replace("/",""));     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
-    match terms.next() {
-        Some("@bot_xecua_odai") => {
-            let command = terms.next();
-            if command == None {
-                return None;
-            }
-            let command = command.unwrap();
-            if command == "help" {      //お題を要求するために叩いていたコマンドのスラッシュの有無を論理和を使わなくてすんだので変更 　以下同様に l22, l29, l31
-                Some(Help)
-            } else if command == "random" {
-                Some(Random(terms.map(|x| x.to_string()).collect()))
-            } else {
-                None
-            }
+    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase().replace("/",""));     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
+    let command = terms.next();
+    if command.is_none() {
+        return None;
+    }
+
+    let mut command = command.unwrap();
+    if command.as_str() == "@bot_xecua_odai" {
+        match terms.next() {
+            Some(c) => { command = c; }
+            None => { return None; }
         }
-        Some(command) => {
-            if command == "help" {
-                Some(Help)
-            } else if command == "random" {
-                Some(Random(terms.map(|x| x.to_string()).collect()))
-            } else {
-                None
-            }
-        }
-        _ => None,
+    }
+
+    match command.as_str() {
+        "help" => Some(Help),
+        "random" => Some(Random(terms.map(|x| x.to_string()).collect())),
+        _ => None
     }
 }
 
