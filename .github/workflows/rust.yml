@@ -29,3 +29,10 @@ jobs:
         RUST_LOG: debug
     - name: Run tests
       run: cargo test --verbose
+    - name: Deploy Webhook
+      uses: joelwmale/webhook-action@1.0.0
+      env:
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      with:
+        data: "${{ secrets.WEBHOOK_SECRET }}"
+
