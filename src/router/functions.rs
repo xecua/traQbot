@@ -47,9 +47,9 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 ## :shiyourei_shi::shiyourei_you::shiyourei_rei:
 + `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
 + `/random` と投稿すると、適当にお題を出します
-## 直近のアップデート: v1.1.2
-+ Diode, FREEF4LL, GLORY:ROAD, Monochrome Princess, Heavenly carelessを追加
-+ 一部文言を変更
+## 直近のアップデート: v1.1.3
++ 括弧の位置がおかしかったのを修正
++ メンションにcase insensitiveで反応([Pull Request#2](https://github.com/xecua/traQbot/pull/2))
 "#;
 
 pub struct RandomOption {
@@ -140,7 +140,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rng).unwrap();
 
                 format!(
-                    "『{}』 {} {}を{}",
+                    "{} 『{}』 {}を{}",
                     make_mention(&data.message.user.name, &data.message.user.id),
                     title,
                     dif,
