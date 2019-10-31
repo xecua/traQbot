@@ -2,31 +2,27 @@ use diesel::prelude::*;
 use super::schema::{songs, aprilfools};
 
 #[derive(Serialize, Deserialize, Queryable, Debug)]
-pub struct Song {
-    pub id: i32,
-    pub title: String,
-    pub past_difficulty: Option<i32>,
-    pub present_difficulty: Option<i32>,
-    pub future_difficulty: Option<i32>
+pub enum Difficulty {
+    PAST,
+    PRESENT,
+    FUTURE,
+    APRIL
 }
 
 #[derive(Serialize, Deserialize, Queryable, Debug)]
-pub struct Aprilfool {
+pub struct Song {
     pub id: i32,
-    pub title: String
+    pub title: String,
+    pub difficulty: Difficulty,
+    pub level_val: Option<i32>
 }
+
 
 #[derive(Insertable)]
 #[table_name="songs"]
 pub struct NewSong<'a> {
     pub title: &'a str,
-    pub past_difficulty: &'a i32,
-    pub present_difficulty: &'a i32,
-    pub future_difficulty: &'a i32
+    pub difficulty: &'a Difficulty,
+    pub level_val: &'a i32
 }
 
-#[derive(Insertable)]
-#[table_name="aprilfools"]
-pub struct NewAprilfool<'a> {
-    pub title: &'a str
-}

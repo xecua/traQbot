@@ -41,7 +41,7 @@ INSERT INTO songs (
     ("REconstruction", 2, 6, 8),
     ("Evoltex (poppi'n mix)", 2, 7, 8),
     ("Oracle", 3, 5, 9),
-    ("αterβus", 4, 7, 10),
+    ("αterlβus", 4, 7, 10),
     ("Ignotus", 3, 6, 9),
     ("不浄な白い鳥", 2, 5, 9),
     ("ハルトピア ~Utopia of Spring", 1, 4, 8),
