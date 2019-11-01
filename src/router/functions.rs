@@ -106,7 +106,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
 
                 format!(
-                    "{} 『{}』 {}を{}",
+                    "@{} 『{}』 {}を{}",
                     &data.message.user.name,
                     song.title,
                     song.difficulty,
@@ -115,7 +115,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             }
             Err(e) => {
                 format!(
-                    "{} {}",
+                    "@{} {}",
                     &data.message.user.name,
                     e
                 )
@@ -131,7 +131,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 let task = ODAI.choose(&mut rng).unwrap();
 
                 format!(
-                    "{} 『{}』 {}を{}",
+                    "@{} 『{}』 {}を{}",
                     &data.message.user.name,
                     title,
                     dif,
@@ -140,7 +140,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             }
             Err(e) => {
                 format!(
-                    "{} {}",
+                    "@{} {}",
                     &data.message.user.name,
                     e
                 )
