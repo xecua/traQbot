@@ -5,25 +5,12 @@ use rocket_contrib::databases::diesel::MysqlConnection;
 use log::{error, warn, info, debug};
 use super::super::router::functions::RandomOption;
 
-pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
-    use super::schema::songs::dsl::*;
-    use super::models::Song;
-    use rand::seq::SliceRandom;
-
-    let res = songs.load::<Song>(conn)?;
-
-    match res.choose(&mut rand::thread_rng()) {
-        Some(song) => Ok(song.title.clone()),
-        None => Err(Error::NotFound)
-    }
-}
-
 pub struct SongWithDif {
     pub title: String,
     pub difficulty: String
 }
 
-pub fn get_random_one_with_option(conn: &MysqlConnection, option: RandomOption) -> Result<SongWithDif, Error> {
+pub fn get_random_one(conn: &MysqlConnection, option: RandomOption) -> Result<SongWithDif, Error> {
     use super::schema::songs::dsl::*;
     use super::models::Song;
     use rand::seq::SliceRandom;
@@ -41,7 +28,6 @@ pub fn get_random_one_with_option(conn: &MysqlConnection, option: RandomOption) 
                    .load::<Song>(conn)?;
     } else {
         res = songs.load::<Song>(conn)?;
-        error!("Something is wrong(program must not reach here).")
     }
 
     let mut rng = rand::thread_rng();

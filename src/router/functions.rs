@@ -62,89 +62,62 @@ impl RandomOption {
 
 pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database) -> String {
     use super::super::constants::arcaea::{DIFFICULTY,ODAI};
-    use super::super::database::operation::{get_random_one, get_random_one_with_option,SongWithDif};
+    use super::super::database::operation::{get_random_one,SongWithDif};
     use super::super::utils::make_mention;
     use rand::seq::SliceRandom;
 
-    if terms.len() > 0 {
-        let mut options = RandomOption::new();
+    let mut options = RandomOption::new();
 
-        for option in terms {
-            if option == "1" {
-                options.levels.push(1)
-            } else if option == "2" {
-                options.levels.push(2);
-            } else if option == "3" {
-                options.levels.push(3);
-            } else if option == "4" {
-                options.levels.push(4);
-            } else if option == "5" {
-                options.levels.push(5);
-            } else if option == "6" {
-                options.levels.push(6);
-            } else if option == "7" {
-                options.levels.push(7);
-            } else if option == "8" {
-                options.levels.push(8);
-            } else if option == "9" {
-                options.levels.push(9);
-            } else if option == "9+" {
-                options.levels.push(10);
-            } else if option == "10" {
-                options.levels.push(11);
-            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(Difficulty::PAST);
-            } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(Difficulty::PRESENT);
-            } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(Difficulty::FUTURE);
-            }
+    for option in terms {
+        if option == "1" {
+            options.levels.push(1)
+        } else if option == "2" {
+            options.levels.push(2);
+        } else if option == "3" {
+            options.levels.push(3);
+        } else if option == "4" {
+            options.levels.push(4);
+        } else if option == "5" {
+            options.levels.push(5);
+        } else if option == "6" {
+            options.levels.push(6);
+        } else if option == "7" {
+            options.levels.push(7);
+        } else if option == "8" {
+            options.levels.push(8);
+        } else if option == "9" {
+            options.levels.push(9);
+        } else if option == "9+" {
+            options.levels.push(10);
+        } else if option == "10" {
+            options.levels.push(11);
+        } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {
+            options.difficulties.push(Difficulty::PAST);
+        } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
+            options.difficulties.push(Difficulty::PRESENT);
+        } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
+            options.difficulties.push(Difficulty::FUTURE);
         }
-        
-        match get_random_one_with_option(&*conn, options) {
-            Ok(song) => {
-                let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
-
-                format!(
-                    "@{} 『{}』 {}を{}",
-                    &data.message.user.name,
-                    song.title,
-                    song.difficulty,
-                    task
-                )
-            }
-            Err(e) => {
-                format!(
-                    "@{} {}",
-                    &data.message.user.name,
-                    e
-                )
-            }
-        }
-        
     }
-    else {
-        match get_random_one(&*conn) {
-            Ok(title) => {
-                let mut rng = rand::thread_rng();
-                let dif = DIFFICULTY.choose(&mut rng).unwrap();
-                let task = ODAI.choose(&mut rng).unwrap();
 
-                format!(
-                    "@{} 『{}』 {}を{}",
-                    &data.message.user.name,
-                    title,
-                    dif,
-                    task
-                )
-            }
-            Err(e) => {
-                format!(
-                    "@{} {}",
-                    &data.message.user.name,
-                    e
-                )
-            }
+    match get_random_one(&*conn, options) {
+        Ok(song) => {
+            let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
+
+            format!(
+                "@{} 『{}』 {}を{}",
+                &data.message.user.name,
+                song.title,
+                song.difficulty,
+                task
+            )
+        }
+        Err(e) => {
+            format!(
+                "@{} {}",
+                &data.message.user.name,
+                e
+            )
         }
     }
 }
