@@ -1,4 +1,21 @@
--- Your SQL goes here
+-- This file should undo anything in `up.sql`
+-- restore all the previous data;
+
+DROP TABLE songs;
+
+CREATE TABLE IF NOT EXISTS songs (
+    id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    past_difficulty INTEGER,
+    present_difficulty INTEGER,
+    future_difficulty INTEGER -- 9+ -> 10, 10 -> 11とする
+);
+
+CREATE TABLE IF NOT EXISTS aprilfools (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL
+);
+
 INSERT INTO songs (
     title, past_difficulty, present_difficulty, future_difficulty
 ) VALUES 
@@ -137,8 +154,13 @@ INSERT INTO songs (
     ("AI[UE]OON", 3, 6, 9),
     ("迷える音色は恋の唄", 3, 7, 9),
     ("Tie me down gently", 3, 5, 8),
-    ("Valhalla:0", 4, 7, 10);
-
+    ("Valhalla:0", 4, 7, 10),
+    ("Mirzam", 4, 7, 9),
+    ("Diode", 2, 5, 8),
+    ("FREEF4LL", 4, 7, 8),
+    ("GLORY:ROAD", 4, 7, 10),
+    ("Monochrome Princess", 4, 7, 9),
+    ("Heavenly careless", 3, 7, 9);
 
 INSERT INTO aprilfools ( title ) VALUES 
     ("Ignotus Afterburn"),

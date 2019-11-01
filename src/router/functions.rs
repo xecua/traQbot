@@ -69,7 +69,6 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
     if terms.len() > 0 {
         let mut options = RandomOption::new();
 
-        
         for option in terms {
             if option == "1" {
                 options.levels.push(1)
@@ -102,7 +101,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             }
         }
         
-        match get_random_one_with_option(&*conn, &options) {
+        match get_random_one_with_option(&*conn, options) {
             Ok(song) => {
                 let task = ODAI.choose(&mut rand::thread_rng()).unwrap();
 
