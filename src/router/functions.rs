@@ -10,7 +10,7 @@ pub enum Command {
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase().replace("/",""));     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
+    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase());     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
     let command = terms.next();
     if command.is_none() {
         return None;
@@ -25,23 +25,19 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
     }
 
     match command.as_str() {
-        "help" => Some(Help),
-        "random" => Some(Random(terms.map(|x| x.to_string()).collect())),
+        "/help" => Some(Help),
+        "/random" => Some(Random(terms.map(|x| x.to_string()).collect())),
         _ => None
     }
 }
 
 pub const HELP_TEXT: &'static str = r#"## このBotの使い方
-スラッシュコマンド形式での投稿を行うと該当する内容を実行します(リプライしてもしなくてもいいです あとリプライのときはスラッシュなくてもいいです)
-+ help : このヘルプを出します
-+ random : 全曲全譜面から適当にお題を出します
-    + さらに、スペース区切りで難易度値(1~10,9+)を指定すると、その中からのみ出題します
-## :shiyourei_shi::shiyourei_you::shiyourei_rei:
-+ `@BOT_xecua_odai help` と投稿すると、ヘルプを出します
-+ `/random` と投稿すると、適当にお題を出します
-## 直近のアップデート: v1.1.3
-+ 括弧の位置がおかしかったのを修正
-+ メンションにcase insensitiveで反応([Pull Request#2](https://github.com/xecua/traQbot/pull/2))
+スラッシュコマンド形式での#gps/times/xecuaへの投稿、あるいはこのbotへのメンションを行うと該当する内容を実行します
++ `/help` : このヘルプを出します
++ `/random` : 全曲全譜面から適当にお題を出します
+  + さらに、スペース区切りで難易度値(1~10,9+)を指定すると、その中からのみ出題します
+## 直近のアップデート: v1.1.4
++ 反応の方式を変更(**リプライにおいてもスラッシュを必要とするようにしました**、気分です)
 "#;
 
 pub struct RandomOption {
