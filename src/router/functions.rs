@@ -10,7 +10,7 @@ pub enum Command {
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase());     //ケースインセンシティブ化、スラッシュ除去　全て小文字に直してから処理しています
+    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase());     //ケースインセンシティブ化　全て小文字に直してから処理しています
     let command = terms.next();
     if command.is_none() {
         return None;
@@ -36,13 +36,17 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 + `/help` : このヘルプを出します
 + `/random` : 全曲全譜面から適当にお題を出します
   + さらに、スペース区切りで難易度値(1~10,9+)を指定すると、その中からのみ出題します
-## 直近のアップデート: v1.1.4
+  + また、スペース区切りで難易度(PAST/PST, PRESENT/PRS, FUTURE/FTR)を指定すると、その中からのみ出題します
+## 最近のアップデート: v1.1.4
 + 反応の方式を変更(**リプライにおいてもスラッシュを必要とするようにしました**、気分です)
+## 直近のアップデート: v1.2.0
++ 難易度指定に対応
 "#;
 
+use super::super::database::models::Difficulty;
 pub struct RandomOption {
     pub levels: Vec<i32>,
-    pub difficulties: Vec<String>
+    pub difficulties: Vec<Difficulty>
 }
 
 impl RandomOption {
@@ -88,12 +92,12 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
                 options.levels.push(10);
             } else if option == "10" {
                 options.levels.push(11);
-            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {  //ここは未実装　この機能欲しい
-                options.difficulties.push(String::from("PAST"));
+            } else if "past".eq_ignore_ascii_case(&option) || "pst".eq_ignore_ascii_case(&option) {
+                options.difficulties.push(Difficulty::PAST);
             } else if "present".eq_ignore_ascii_case(&option) || "prs".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(String::from("PRESENT"));
+                options.difficulties.push(Difficulty::PRESENT);
             } else if "future".eq_ignore_ascii_case(&option) || "ftr".eq_ignore_ascii_case(&option) {
-                options.difficulties.push(String::from("FUTURE"));
+                options.difficulties.push(Difficulty::FUTURE);
             }
         }
         
@@ -103,7 +107,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
 
                 format!(
                     "{} 『{}』 {}を{}",
-                    make_mention(&data.message.user.name, &data.message.user.id),
+                    &data.message.user.name,
                     song.title,
                     song.difficulty,
                     task
@@ -112,7 +116,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             Err(e) => {
                 format!(
                     "{} {}",
-                    make_mention(&data.message.user.name, &data.message.user.id),
+                    &data.message.user.name,
                     e
                 )
             }
@@ -128,7 +132,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
 
                 format!(
                     "{} 『{}』 {}を{}",
-                    make_mention(&data.message.user.name, &data.message.user.id),
+                    &data.message.user.name,
                     title,
                     dif,
                     task
@@ -137,7 +141,7 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
             Err(e) => {
                 format!(
                     "{} {}",
-                    make_mention(&data.message.user.name, &data.message.user.id),
+                    &data.message.user.name,
                     e
                 )
             }

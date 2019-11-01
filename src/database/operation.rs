@@ -11,7 +11,7 @@ pub fn get_random_one(conn: &MysqlConnection) -> Result<String, Error> {
     use rand::seq::SliceRandom;
 
     let res = songs.load::<Song>(conn)?;
-    
+
     match res.choose(&mut rand::thread_rng()) {
         Some(song) => Ok(song.title.clone()),
         None => Err(Error::NotFound)
@@ -27,12 +27,25 @@ pub fn get_random_one_with_option(conn: &MysqlConnection, option: RandomOption) 
     use super::schema::songs::dsl::*;
     use super::models::Song;
     use rand::seq::SliceRandom;
-    
-    let res = songs.filter(level_val.eq_any(option.levels))
+
+    let res: Vec<Song>;
+    if option.difficulties.len() > 0 && option.levels.len() > 0 {
+        res = songs.filter(level_val.eq_any(option.levels)
+                            .and(difficulty.eq_any(option.difficulties)))
                    .load::<Song>(conn)?;
-    
+    } else if option.difficulties.len() > 0 {
+        res = songs.filter(difficulty.eq_any(option.difficulties))
+                   .load::<Song>(conn)?;
+    } else if option.levels.len() > 0 {
+        res = songs.filter(level_val.eq_any(option.levels))
+                   .load::<Song>(conn)?;
+    } else {
+        res = songs.load::<Song>(conn)?;
+        error!("Something is wrong(program must not reach here).")
+    }
+
     let mut rng = rand::thread_rng();
-    
+
     match res.choose(&mut rng) {
         Some(song) => Ok(SongWithDif {
                 title: song.title.clone(),
@@ -46,9 +59,9 @@ pub fn aprilfool(conn: &MysqlConnection) -> Result<String, Error> {
     use super::schema::songs::dsl::*;
     use super::models::Song;
     use rand::seq::SliceRandom;
-    
+
     let res = songs.filter(level_val.eq(0)).load::<Song>(conn)?;
-    
+
     match res.choose(&mut rand::thread_rng()) {
         Some(song) => Ok(song.title.clone()),
         None => Err(Error::NotFound)

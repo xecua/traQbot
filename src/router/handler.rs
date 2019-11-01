@@ -61,6 +61,7 @@ pub fn message(_header: Header, _message_header: MessageHeader, data: Json<Messa
     // 投げる
     let client = reqwest::Client::new();
     let res = client.post(endpoint)
+        .query(&[("embed", "1")])
         .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
         .json(&body)
         .send();
