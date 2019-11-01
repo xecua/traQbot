@@ -36,7 +36,7 @@ pub fn get_random_one_with_option(conn: &MysqlConnection, option: RandomOption) 
     match res.choose(&mut rng) {
         Some(song) => Ok(SongWithDif {
                 title: song.title.clone(),
-                difficulty: song.level_val.to_string()
+                difficulty: song.difficulty.to_string()
         }),
         None => Err(Error::NotFound)
     }

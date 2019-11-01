@@ -58,6 +58,17 @@ define_enum! {
     }
 }
 
+impl std::fmt::Display for Difficulty {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match *self {
+            Difficulty::PAST => write!(f, "PAST"),
+            Difficulty::PRESENT => write!(f, "PRESENT"),
+            Difficulty::FUTURE => write!(f, "FUTURE"),
+            Difficulty::APRIL => write!(f, ""),
+        }
+    }
+}
+
 #[derive(Queryable, Debug)]
 pub struct Song {
     pub id: i32,
