@@ -23,6 +23,7 @@ jobs:
     - name: Setup
       run: |
         rustup default nightly
+        sudo apt update
         sudo apt install -y libmysqlclient-dev
     - name: Build
       run: cargo build --verbose
@@ -36,5 +37,6 @@ jobs:
       uses: joelwmale/webhook-action@1.0.0
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+        SECRET_KEY: ${{ secrets.WEBHOOK_SECRET }}
       with:
-        data: "${{ secrets.WEBHOOK_SECRET }}"
+        data: "${SECRET_KEY}"
