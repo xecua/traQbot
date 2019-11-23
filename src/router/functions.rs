@@ -1,16 +1,21 @@
+#![allow(non_snake_case)]
+#![allow(dead_code)]
 use super::super::database::Database;
 use super::receiver::*;
+use super::BASE_URL;
+use serde_derive::Deserialize;
 
-#[derive(PartialEq,Debug)] // for debug/test
+#[derive(PartialEq, Debug)] // for debug/test
 pub enum Command {
     Help,
     Random(Vec<String>),
+    Stamp(usize, Vec<String>),
 }
 
 // コマンドがあればそれを↑のEnum形式で、なければNoneを返す
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase());     //ケースインセンシティブ化　全て小文字に直してから処理しています
+    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase()); //ケースインセンシティブ化　全て小文字に直してから処理しています
     let command = terms.next();
     if command.is_none() {
         return None;
@@ -19,34 +24,42 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
     let mut command = command.unwrap();
     if command.as_str() == "@bot_xecua_odai" {
         match terms.next() {
-            Some(c) => { command = c; }
-            None => { return None; }
+            Some(c) => {
+                command = c;
+            }
+            None => {
+                return None;
+            }
         }
     }
 
     match command.as_str() {
         "/help" => Some(Help),
         "/random" => Some(Random(terms.map(|x| x.to_string()).collect())),
-        _ => None
+        "/stamp" => match terms.clone().next() {
+            Some(s) => match s.parse::<usize>() {
+                Ok(n) => Some(Stamp(n, terms.skip(1).map(|x| x.to_string()).collect())),
+                Err(_) => Some(Stamp(1, terms.map(|x| x.to_string()).collect())),
+            },
+            None => Some(Stamp(1, Vec::new())),
+        },
+        _ => None,
     }
 }
 
 pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 スラッシュコマンド形式での#gps/times/xecuaへの投稿、あるいはこのbotへのメンションを行うと該当する内容を実行します
 + `/help` : このヘルプを出します
-+ `/random` : 全曲全譜面から適当にお題を出します
-  + さらに、スペース区切りで難易度値(1~10,9+)を指定すると、その中からのみ出題します
-  + また、スペース区切りで難易度(PAST/PST, PRESENT/PRS, FUTURE/FTR)を指定すると、その中からのみ出題します
-## 最近のアップデート: v1.1.4
-+ 反応の方式を変更(**リプライにおいてもスラッシュを必要とするようにしました**、気分です)
-## 直近のアップデート: v1.2.0
-+ 難易度指定に対応
++ `/random [difficulty|level]` : 全曲全譜面から適当にお題を出します
+  + `difficulty`に難易度(PAST/PST, PRESENT/PRS, FUTURE/FTR)を空白区切りで指定すると、その中からのみ出題します
+  + `level`にレベル値(1~9,9+,10)を指定すると、その中からのみ出題します
++ `/stamp [n] [stamp_list]`: n個のスタンプをランダムで召喚します 省略した場合n=1です stamp_listは空白区切りで(コロンなしで)スタンプ名を置くとそこからn個選択します(ちなみに存在するかはチェックしません)
 "#;
 
 use super::super::database::models::Difficulty;
 pub struct RandomOption {
     pub levels: Vec<i32>,
-    pub difficulties: Vec<Difficulty>
+    pub difficulties: Vec<Difficulty>,
 }
 
 impl RandomOption {
@@ -55,14 +68,14 @@ impl RandomOption {
 
         RandomOption {
             levels: Vec::new(),
-            difficulties: Vec::new()
+            difficulties: Vec::new(),
         }
     }
 }
 
 pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database) -> String {
-    use super::super::constants::arcaea::{DIFFICULTY,ODAI};
-    use super::super::database::operation::{get_random_one,SongWithDif};
+    use super::super::constants::arcaea::{DIFFICULTY, ODAI};
+    use super::super::database::operation::{get_random_one, SongWithDif};
     use super::super::utils::make_mention;
     use rand::seq::SliceRandom;
 
@@ -106,18 +119,51 @@ pub fn random_choice(terms: Vec<String>, data: &MessageCreated, conn: &Database)
 
             format!(
                 "@{} 『{}』 {}を{}",
-                &data.message.user.name,
-                song.title,
-                song.difficulty,
-                task
+                &data.message.user.name, song.title, song.difficulty, task
             )
         }
-        Err(e) => {
-            format!(
-                "@{} {}",
-                &data.message.user.name,
-                e
-            )
-        }
+        Err(e) => format!("@{} {}", &data.message.user.name, e),
     }
+}
+
+#[derive(Deserialize)]
+struct StampsResponse {
+    id: String,
+    pub name: String,
+    creatorId: String,
+    fileId: String,
+    createdAt: String,
+    updatedAt: String,
+}
+
+pub fn stamp(num: usize, terms: Vec<String>, data: &MessageCreated) -> String {
+    if num == 0 {
+        return format!("@{}", &data.message.user.name);
+    }
+
+    let stamps: Vec<String>;
+    if terms.len() == 0 {
+        let endpoint = reqwest::Url::parse(&format!("{}/stamps", BASE_URL)).unwrap();
+        let client = reqwest::Client::new();
+        let res = client.get(endpoint).send();
+
+        let j: Vec<StampsResponse>;
+        match res {
+            Ok(mut resp) => match resp.json() {
+                Ok(json) => j = json,
+                Err(e) => return format!("@{} {}", &data.message.user.name, e),
+            },
+            Err(e) => return format!("@{} {}", &data.message.user.name, e),
+        }
+        stamps = j.into_iter().map(|s| format!(":{}:", s.name)).collect();
+    } else {
+        stamps = terms;
+    }
+    use rand::Rng;
+    let mut items: Vec<String> = Vec::new();
+    let mut rng = rand::thread_rng();
+    for _ in 0..num {
+        items.push(format!(":{}:", stamps[rng.gen_range(0, stamps.len())]));
+    }
+    format!("@{} {}", &data.message.user.name, items.join(""))
 }
