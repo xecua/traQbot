@@ -37,6 +37,4 @@ jobs:
       uses: joelwmale/webhook-action@1.0.0
       env:
         WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        SECRET_KEY: ${{ secrets.WEBHOOK_SECRET }}
-      with:
-        data: "${SECRET_KEY}"
+        data: "${{ secrets.WEBHOOK_SECRET }}"
