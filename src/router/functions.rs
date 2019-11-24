@@ -145,7 +145,13 @@ struct StampsResponse {
     updatedAt: String,
 }
 
+lazy_static! {
+    static ref ACCESS_TOKEN: String = std::env::var("BOT_ACCESS_TOKEN").unwrap();
+}
+
 pub fn stamp(num: usize, terms: Vec<String>, data: &MessageCreated) -> String {
+    use reqwest::header::AUTHORIZATION;
+
     if num == 0 {
         return format!("@{}", &data.message.user.name);
     }
@@ -154,8 +160,10 @@ pub fn stamp(num: usize, terms: Vec<String>, data: &MessageCreated) -> String {
     if terms.len() == 0 {
         let endpoint = reqwest::Url::parse(&format!("{}/stamps", BASE_URL)).unwrap();
         let client = reqwest::Client::new();
-        let res = client.get(endpoint).send();
-
+        let res = client
+            .get(endpoint)
+            .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+            .send();
         let j: Vec<StampsResponse>;
         match res {
             Ok(mut resp) => match resp.json() {
@@ -164,7 +172,7 @@ pub fn stamp(num: usize, terms: Vec<String>, data: &MessageCreated) -> String {
             },
             Err(e) => return format!("@{} {}", &data.message.user.name, e),
         }
-        stamps = j.into_iter().map(|s| format!(":{}:", s.name)).collect();
+        stamps = j.into_iter().map(|s| format!("{}", s.name)).collect();
     } else {
         stamps = terms;
     }
