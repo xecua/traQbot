@@ -63,26 +63,30 @@ pub fn message(
             return Status::NoContent;
         }
     }
-    // チャンネル
-    let channel_id = data.message.channelId.clone();
-    let endpoint =
-        reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
+    if cfg!(debug_assertions) {
+        debug!("{:?}", body);
+    } else {
+        // チャンネル
+        let channel_id = data.message.channelId.clone();
+        let endpoint =
+            reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
 
-    // 投げる
-    let client = reqwest::Client::new();
-    let res = client
-        .post(endpoint)
-        .query(&[("embed", "1")])
-        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-        .json(&body)
-        .send();
+        // 投げる
+        let client = reqwest::Client::new();
+        let res = client
+            .post(endpoint)
+            .query(&[("embed", "1")])
+            .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+            .json(&body)
+            .send();
 
-    match res {
-        Ok(resp) => info!(
-            "Sending was succeeded. Here's response code: {}",
-            resp.status().as_u16()
-        ),
-        Err(_) => warn!("Failed to post"),
-    };
+        match res {
+            Ok(resp) => info!(
+                "Sending was succeeded. Here's response code: {}",
+                resp.status().as_u16()
+            ),
+            Err(_) => warn!("Failed to post"),
+        };
+    }
     Status::NoContent
 }
