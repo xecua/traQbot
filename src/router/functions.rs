@@ -38,8 +38,17 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
         "/random" => Some(Random(terms.map(|x| x.to_string()).collect())),
         "/stamp" => match terms.clone().next() {
             Some(s) => match s.parse::<usize>() {
-                Ok(n) => Some(Stamp(n, terms.skip(1).map(|x| x.to_string()).collect())),
-                Err(_) => Some(Stamp(1, terms.map(|x| x.to_string()).collect())),
+                Ok(n) => Some(Stamp(
+                    n,
+                    terms
+                        .skip(1)
+                        .map(|x| x.replace(":", "").to_string())
+                        .collect(),
+                )),
+                Err(_) => Some(Stamp(
+                    1,
+                    terms.map(|x| x.replace(":", "").to_string()).collect(),
+                )),
             },
             None => Some(Stamp(1, Vec::new())),
         },
@@ -53,7 +62,7 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
 + `/random [difficulty|level]` : 全曲全譜面から適当にお題を出します
   + `difficulty`に難易度(PAST/PST, PRESENT/PRS, FUTURE/FTR)を空白区切りで指定すると、その中からのみ出題します
   + `level`にレベル値(1~9,9+,10)を指定すると、その中からのみ出題します
-+ `/stamp [n] [stamp_list]`: n個のスタンプをランダムで召喚します 省略した場合n=1です stamp_listは空白区切りで(コロンなしで)スタンプ名を置くとそこからn個選択します(ちなみに存在するかはチェックしません)
++ `/stamp [n] [stamp_list]`: n個のスタンプをランダムで召喚します 省略した場合n=1です stamp_listは空白区切りでスタンプ名を置くとそこからn個選択します(ちなみに存在するかはチェックしません) 省略するとtraQから引っ張ってきます
 "#;
 
 use super::super::database::models::Difficulty;
