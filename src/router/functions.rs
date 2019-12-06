@@ -12,10 +12,19 @@ pub enum Command {
     Stamp(usize, Vec<String>),
 }
 
-// コマンドがあればそれを↑のEnum形式で、なければNoneを返す
+fn comma_split<T: std::iter::Iterator<Item = String>>(iter: T) -> Vec<String> {
+    let mut res = Vec::new();
+    for i in iter {
+        for c in i.split(':').filter(|x| !x.is_empty()) {
+            res.push(c.to_string());
+        }
+    }
+    res
+}
+
 pub fn parse_command(plain_text: &str) -> Option<Command> {
     use Command::*;
-    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase()); //ケースインセンシティブ化　全て小文字に直してから処理しています
+    let mut terms = plain_text.split_whitespace().map(|x| x.to_lowercase());
     let command = terms.next();
     if command.is_none() {
         return None;
@@ -35,20 +44,12 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
 
     match command.as_str() {
         "/help" => Some(Help),
-        "/random" => Some(Random(terms.map(|x| x.to_string()).collect())),
+        "/random" => Some(Random(terms.collect())),
         "/stamp" => match terms.clone().next() {
+            // clone `terms` not to consume original
             Some(s) => match s.parse::<usize>() {
-                Ok(n) => Some(Stamp(
-                    n,
-                    terms
-                        .skip(1)
-                        .map(|x| x.replace(":", "").to_string())
-                        .collect(),
-                )),
-                Err(_) => Some(Stamp(
-                    1,
-                    terms.map(|x| x.replace(":", "").to_string()).collect(),
-                )),
+                Ok(n) => Some(Stamp(n, comma_split(terms.skip(1)))),
+                Err(_) => Some(Stamp(1, comma_split(terms))),
             },
             None => Some(Stamp(1, Vec::new())),
         },
@@ -182,5 +183,5 @@ pub fn stamp(num: usize, terms: Vec<String>, data: &MessageCreated) -> String {
     for _ in 0..num {
         items.push(format!(":{}:", stamps[rng.gen_range(0, stamps.len())]));
     }
-    format!("@{} {}", &data.message.user.name, items.join(""))
+    format!("{}", items.join(""))
 }
