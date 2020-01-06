@@ -10,6 +10,7 @@ pub enum Command {
     Help,
     Random(Vec<String>),
     Stamp(usize, Vec<String>),
+    Omikuji,
 }
 
 fn comma_split<T: std::iter::Iterator<Item = String>>(iter: T) -> Vec<String> {
@@ -53,6 +54,7 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
             },
             None => Some(Stamp(1, Vec::new())),
         },
+        "/omikuji" => Some(Omikuji),
         _ => None,
     }
 }
@@ -64,6 +66,7 @@ pub const HELP_TEXT: &'static str = r#"## このBotの使い方
   + `difficulty`に難易度(PAST/PST, PRESENT/PRS, FUTURE/FTR)を空白区切りで指定すると、その中からのみ出題します
   + `level`にレベル値(1~9,9+,10)を指定すると、その中からのみ出題します
 + `/stamp [n] [stamp_list]`: n個のスタンプをランダムで召喚します 省略した場合n=1です stamp_listは空白区切りでスタンプ名を置くとそこからn個選択します(ちなみに存在するかはチェックしません) 省略するとtraQから引っ張ってきます
++ /omikuji おみくじ代行サービス代行サービスです
 "#;
 
 use super::super::database::models::Difficulty;

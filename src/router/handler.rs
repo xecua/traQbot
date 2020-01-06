@@ -59,6 +59,43 @@ pub fn message(
         Some(Command::Stamp(num, terms)) => {
             body.insert("text", stamp(num, terms, &data));
         }
+        Some(Command::Omikuji) => {
+            {
+                let mut body = HashMap::new();
+                body.insert("text", "おみくじ代行サービス代行サービスです！");
+
+                if cfg!(debug_assertions) {
+                    debug!("{:?}", body);
+                } else {
+                    let channel_id = data.message.channelId.clone();
+                    let endpoint =
+                        reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
+
+                    let client = reqwest::Client::new();
+                    let res = client
+                        .post(endpoint)
+                        .query(&[("embed", "1")])
+                        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
+                        .json(&body)
+                        .send();
+
+                    match res {
+                        Ok(resp) => {
+                            info!(
+                                "Sending was succeeded. Here's response code: {}",
+                                resp.status().as_u16()
+                            );
+                            std::thread::sleep(std::time::Duration::from_secs(2));
+                        }
+                        Err(_) => {
+                            warn!("Failed to post");
+                            return Status::NoContent;
+                        }
+                    };
+                }
+            }
+            body.insert("text", String::from("@BOT_aya_se おみくじ代行サービス"));
+        }
         None => {
             return Status::NoContent;
         }
