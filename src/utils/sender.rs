@@ -34,7 +34,7 @@ pub fn send_message(_: &str, text: String) -> Result<(), String> {
 #[cfg(not(debug_assertions))]
 pub fn send_message(channel_id: &str, text: String) -> Result<(), String> {
     let endpoint = Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
-    let body = HashMap::new();
+    let mut body = HashMap::new();
     body.insert("text", text);
 
     // 投げる
