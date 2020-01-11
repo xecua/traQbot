@@ -1,4 +1,4 @@
-use super::schema::songs;
+use super::schema::{songs,channels};
 use diesel::prelude::*;
 
 // https://ryym.tokyo/posts/diesel-enum/
@@ -83,4 +83,16 @@ pub struct NewSong<'a> {
     pub title: &'a str,
     pub difficulty: &'a Difficulty,
     pub level_val: &'a i32,
+}
+
+#[derive(Queryable, Debug)]
+pub struct Channel {
+    pub id: i32,
+    pub channel_id: String
+}
+
+#[derive(Insertable)]
+#[table_name = "channels"]
+pub struct NewChannel<'a> {
+    pub channel_id: &'a str
 }

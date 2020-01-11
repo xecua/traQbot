@@ -8,6 +8,7 @@ use super::receiver::*;
 use crate::database::Database;
 use crate::utils::command::*;
 use crate::utils::sender::send_message;
+use crate::utils::channel::*;
 use crate::utils::*;
 
 use log::{debug, error, info, warn};
@@ -72,6 +73,12 @@ pub fn message(
                     String::from("@BOT_aya_se おみくじ代行サービス"),
                 )
             }
+        },
+        Some(Command::Join) => {
+            join_channel(&data.message.channelId, &conn)
+        }
+        Some(Command::Leave) => {
+            leave_channel(&data.message.channelId, &conn)
         }
         None => Ok(()),
     } {

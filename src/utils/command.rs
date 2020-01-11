@@ -4,6 +4,8 @@ pub enum Command {
     Random(Vec<String>),
     Stamp(usize, Vec<String>),
     Omikuji,
+    Join,
+    Leave
 }
 
 fn comma_split<T: std::iter::Iterator<Item = String>>(iter: T) -> Vec<String> {
@@ -48,6 +50,8 @@ pub fn parse_command(plain_text: &str) -> Option<Command> {
             None => Some(Stamp(1, Vec::new())),
         },
         "/omikuji" => Some(Omikuji),
+        "/join" => Some(Join),
+        "/leave" => Some(Leave),
         _ => None,
     }
 }

@@ -53,3 +53,25 @@ pub fn aprilfool(conn: &MysqlConnection) -> Result<String, Error> {
         None => Err(Error::NotFound)
     }
 }
+
+pub fn insert_channel(conn: &MysqlConnection, channel: &str) -> Result<usize, Error> {
+    use super::schema::channels::dsl::*;
+    use super::models::NewChannel;
+    
+    let new_channel = NewChannel {
+        channel_id: channel
+    };
+
+    diesel::insert_into(channels)
+        .values(&new_channel)
+        .execute(conn)
+}
+
+pub fn delete_channel(conn: &MysqlConnection, channel: &str) -> Result<usize, Error> {
+    use super::schema::channels;
+    use super::schema::channels::dsl::*;
+
+    diesel::delete(channels.filter(
+        channel_id.eq(channel)
+    )).execute(conn)
+}

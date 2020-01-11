@@ -2,6 +2,7 @@ pub mod command;
 pub mod random;
 pub mod sender;
 pub mod stamp;
+pub mod channel;
 
 pub fn make_mention(name: &String, id: &String) -> String {
     format!(
