@@ -1,6 +1,6 @@
 #[test]
 fn test_parse_command() {
-    use crate::router::functions::{Command,parse_command};
+    use crate::utils::command::{Command,parse_command};
 
     // white box test
     assert!(parse_command("this is not a command").is_none());

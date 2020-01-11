@@ -10,11 +10,14 @@ pub fn join_channel(channel: &str, conn: &Database) -> Result<(), String> {
         return Err(e.to_string());
     }
 
-    if let Err(e) = join_channel_request(channel) {
-        if let Err(e) = send_message(channel, String::from("参加に失敗しました...")) {
+    match join_channel_request(channel) {
+        Err(e) => {
+            if let Err(er) = send_message(channel, format!("参加に失敗しました...\n@xecua {}", e)) {
+                return Err(er.to_string());
+            }
             return Err(e.to_string());
         }
-        return Err(e.to_string());
+        _ => ()
     }
 
     send_message(channel, String::from("参加しました！"))
@@ -25,8 +28,8 @@ pub fn leave_channel(channel: &str, conn: &Database) -> Result<(), String> {
     use crate::database::operation::delete_channel;
 
     if let Err(e) = leave_channel_request(channel) {
-        if let Err(e) = send_message(channel, String::from("離脱に失敗しました...")) {
-            return Err(e.to_string());
+        if let Err(er) = send_message(channel, format!("離脱に失敗しました...\n@xecua {}", e)) {
+            return Err(er.to_string());
         }
         return Err(e.to_string());
     }

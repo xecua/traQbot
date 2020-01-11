@@ -18,6 +18,17 @@ pub fn index() -> std::io::Result<NamedFile> {
     NamedFile::open("static/index.html")
 }
 
+// OAuth
+#[get("/oauth")]
+pub fn get_oauth() -> std::io::Result<NamedFile> {
+    NamedFile::open("static/oauth.html")
+}
+
+#[get("/oauth/callback")]
+pub fn get_oauth_callback() -> std::io::Result<NamedFile> {
+    NamedFile::open("static/oauth_callback.html")
+}
+
 // PING
 #[post("/", data = "<_data>", rank = 1)]
 pub fn ping(_header: Header, _ping_header: PingHeader, _data: Json<Ping>) -> Status {

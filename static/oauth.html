@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Top</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.1/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <button @click="challenge">Get Code</button>
+    </div>
+    <script>
+        const clientID = "fVAZclZyzMd9to7pk1HUIMhA3BdprFgC0g0f"
+        const endpoint = "https://q.trap.jp/api/1.0/oauth2/authorize"
+        const asciiCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+        const app = new Vue({
+            el: "#app",
+            methods: {
+                challenge() {
+                    const state = [...Array(10)].map(() => asciiCharacters[Math.floor(Math.random()*asciiCharacters.length)]).join('')
+                    window.localStorage.setItem("state", state)
+ 
+                    const url = new URL(endpoint)
+                    url.search = new URLSearchParams({
+                        response_type: "code",
+                        client_id: clientID,
+                        state
+                    })
+                    location.assign(url)
+                }
+            }
+        })
+    </script>
+</body>
+</html>

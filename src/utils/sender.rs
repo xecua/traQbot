@@ -21,6 +21,7 @@ lazy_static! {
     static ref ACCESS_TOKEN: String = std::env::var("BOT_ACCESS_TOKEN").unwrap();
     static ref BOT_ID: String = std::env::var("BOT_ID").unwrap();
     static ref BOT_INSTALL_CODE: String = std::env::var("BOT_INSTALL_CODE").unwrap();
+    static ref CLIENT_ACCESS_TOKEN: String = std::env::var("BOT_CLIENT_ACCESS_TOKEN").unwrap();
 }
 
 #[must_use]
@@ -59,14 +60,15 @@ fn get_stamp_json() -> Result<Vec<StampsResponse>, reqwest::Error> {
     Client::new()
         .get(endpoint)
         .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-        .send()?.json()
+        .send()?
+        .json()
 }
 
 #[must_use]
 pub fn get_stamp_name_list() -> Result<Vec<String>, String> {
     match get_stamp_json() {
         Ok(j) => Ok(j.into_iter().map(|s| format!("{}", s.name)).collect()),
-        Err(e) => Err(e.to_string())
+        Err(e) => Err(e.to_string()),
     }
 }
 
@@ -76,23 +78,31 @@ pub fn join_channel_request(channel: &str) -> Result<(), String> {
     body.insert("code", &*BOT_INSTALL_CODE);
 
     match Client::new()
-            .post(endpoint)
-            .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-            .json(&body)
-            .send() {
-        Ok(_) => Ok(()),
+        .post(endpoint)
+        .header(AUTHORIZATION, format!("Bearer {}", &*CLIENT_ACCESS_TOKEN))
+        .json(&body)
+        .send()
+    {
+        Ok(res) if res.status() == reqwest::StatusCode::OK => Ok(()),
+        Ok(res) => Err(res.status().canonical_reason().unwrap_or(res.status().as_str()).to_string()),
         Err(e) => Err(e.to_string())
     }
 }
 
 pub fn leave_channel_request(channel: &str) -> Result<(), String> {
-    let endpoint = Url::parse(&format!("{}/channels/{}/bots/{}", BASE_URL, channel, &*BOT_ID)).unwrap();
+    let endpoint = Url::parse(&format!(
+        "{}/channels/{}/bots/{}",
+        BASE_URL, channel, &*BOT_ID
+    ))
+    .unwrap();
 
     match Client::new()
-            .delete(endpoint)
-            .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-            .send() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(e.to_string())
+        .delete(endpoint)
+        .header(AUTHORIZATION, format!("Bearer {}", &*CLIENT_ACCESS_TOKEN))
+        .send()
+    {
+        Ok(res) if res.status() == reqwest::StatusCode::OK => Ok(()),
+        Ok(res) => Err(res.status().canonical_reason().unwrap_or(res.status().as_str()).to_string()),
+        Err(e) => Err(e.to_string()),
     }
 }

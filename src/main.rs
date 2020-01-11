@@ -15,6 +15,8 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![
             index,
+            get_oauth,
+            get_oauth_callback,
             ping,
             join_left,
             message
