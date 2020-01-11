@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use diesel::result::Error;
 use rocket_contrib::databases::diesel::MysqlConnection;
 use log::{error, warn, info, debug};
-use super::super::router::functions::RandomOption;
+use crate::utils::random::RandomOption;
 
 pub struct SongWithDif {
     pub title: String,

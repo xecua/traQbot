@@ -1,19 +1,16 @@
-use reqwest::header::AUTHORIZATION;
 use rocket::http::Status;
 use rocket::response::NamedFile;
 use rocket::*;
 use rocket_contrib::json::*;
-use std::collections::HashMap;
 
-use super::super::database::Database;
 use super::guards::*;
 use super::receiver::*;
-use super::BASE_URL;
-use log::{debug, error, info, warn};
+use crate::database::Database;
+use crate::utils::command::*;
+use crate::utils::sender::send_message;
+use crate::utils::*;
 
-lazy_static! {
-    static ref ACCESS_TOKEN: String = std::env::var("BOT_ACCESS_TOKEN").unwrap();
-}
+use log::{debug, error, info, warn};
 
 #[get("/")]
 pub fn index() -> std::io::Result<NamedFile> {
@@ -44,86 +41,43 @@ pub fn message(
     data: Json<MessageCreated>,
     conn: Database,
 ) -> Status {
-    use super::functions::*;
-
-    // 投稿するメッセージ
-    let mut body = HashMap::new();
-    let command = parse_command(&data.message.plainText);
-    match command {
+    if let Err(e) = match parse_command(&data.message.plainText) {
         Some(Command::Help) => {
-            body.insert("text", HELP_TEXT.to_string());
+            use crate::constants::HELP_TEXT;
+            send_message(&data.message.channelId, HELP_TEXT.to_string())
         }
         Some(Command::Random(terms)) => {
-            body.insert("text", random_choice(terms, &data, &conn));
+            use crate::utils::random::random_choice;
+            send_message(
+                &data.message.channelId,
+                random_choice(terms, &data.message.user.name, &conn),
+            )
         }
         Some(Command::Stamp(num, terms)) => {
-            body.insert("text", stamp(num, terms, &data));
+            use crate::utils::stamp::stamp;
+            send_message(
+                &data.message.channelId,
+                stamp(num, terms, &data.message.user.name),
+            )
         }
         Some(Command::Omikuji) => {
-            {
-                let mut body = HashMap::new();
-                body.insert("text", "おみくじ代行サービス代行サービスです！");
-
-                if cfg!(debug_assertions) {
-                    debug!("{:?}", body);
-                } else {
-                    let channel_id = data.message.channelId.clone();
-                    let endpoint =
-                        reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
-
-                    let client = reqwest::Client::new();
-                    let res = client
-                        .post(endpoint)
-                        .query(&[("embed", "1")])
-                        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-                        .json(&body)
-                        .send();
-
-                    match res {
-                        Ok(resp) => {
-                            info!(
-                                "Sending was succeeded. Here's response code: {}",
-                                resp.status().as_u16()
-                            );
-                            std::thread::sleep(std::time::Duration::from_secs(2));
-                        }
-                        Err(_) => {
-                            warn!("Failed to post");
-                            return Status::NoContent;
-                        }
-                    };
-                }
+            if let Err(e) = send_message(
+                &data.message.channelId,
+                String::from("おみくじ代行サービス代行サービスです！"),
+            ) {
+                Err(e)
+            } else {
+                send_message(
+                    &data.message.channelId,
+                    String::from("@BOT_aya_se おみくじ代行サービス"),
+                )
             }
-            body.insert("text", String::from("@BOT_aya_se おみくじ代行サービス"));
         }
-        None => {
-            return Status::NoContent;
-        }
-    }
-    if cfg!(debug_assertions) {
-        debug!("{:?}", body);
+        None => Ok(()),
+    } {
+        error!("{}", e);
+        Status::InternalServerError
     } else {
-        // チャンネル
-        let channel_id = data.message.channelId.clone();
-        let endpoint =
-            reqwest::Url::parse(&format!("{}/channels/{}/messages", BASE_URL, channel_id)).unwrap();
-
-        // 投げる
-        let client = reqwest::Client::new();
-        let res = client
-            .post(endpoint)
-            .query(&[("embed", "1")])
-            .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
-            .json(&body)
-            .send();
-
-        match res {
-            Ok(resp) => info!(
-                "Sending was succeeded. Here's response code: {}",
-                resp.status().as_u16()
-            ),
-            Err(_) => warn!("Failed to post"),
-        };
+        Status::NoContent
     }
-    Status::NoContent
 }
