@@ -101,7 +101,7 @@ pub fn leave_channel_request(channel: &str) -> Result<(), String> {
         .header(AUTHORIZATION, format!("Bearer {}", &*CLIENT_ACCESS_TOKEN))
         .send()
     {
-        Ok(res) if res.status() == reqwest::StatusCode::NoContent => Ok(()),
+        Ok(res) if res.status() == reqwest::StatusCode::NO_CONTENT => Ok(()),
         Ok(res) => Err(res.status().canonical_reason().unwrap_or(res.status().as_str()).to_string()),
         Err(e) => Err(e.to_string()),
     }
