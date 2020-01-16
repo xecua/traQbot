@@ -33,7 +33,7 @@ pub struct Embed {
 
 #[derive(Deserialize)]
 pub struct Message {
-    id: String,
+    pub id: String,
     pub user: User,
     pub channelId: String,
     text: String,

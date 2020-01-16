@@ -9,7 +9,7 @@ pub fn do_passive_action(data: &MessageCreated) {
         .unwrap()
         .is_match(&data.message.plainText)
     {
-        if let Err(e) = send_stamp(&data.message.channelId, NAN_INDIA_STAMP_ID) {
+        if let Err(e) = send_stamp(&data.message.id, NAN_INDIA_STAMP_ID) {
             error!("{}", e.to_string())
         }
     }
