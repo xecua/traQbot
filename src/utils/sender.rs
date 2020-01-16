@@ -124,7 +124,7 @@ pub fn send_stamp(post_id: &str, stamp_id: &str) -> Result<(), String> {
     .unwrap();
     match Client::new()
         .post(endpoint)
-        .header(AUTHORIZATION, format!("Bearer {}", &*CLIENT_ACCESS_TOKEN))
+        .header(AUTHORIZATION, format!("Bearer {}", &*ACCESS_TOKEN))
         .send()
     {
         Ok(res) if res.status() == reqwest::StatusCode::NO_CONTENT => Ok(()),
