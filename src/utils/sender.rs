@@ -84,8 +84,12 @@ pub fn join_channel_request(channel: &str) -> Result<(), String> {
         .send()
     {
         Ok(res) if res.status() == reqwest::StatusCode::OK => Ok(()),
-        Ok(res) => Err(res.status().canonical_reason().unwrap_or(res.status().as_str()).to_string()),
-        Err(e) => Err(e.to_string())
+        Ok(res) => Err(res
+            .status()
+            .canonical_reason()
+            .unwrap_or(res.status().as_str())
+            .to_string()),
+        Err(e) => Err(e.to_string()),
     }
 }
 
@@ -102,7 +106,33 @@ pub fn leave_channel_request(channel: &str) -> Result<(), String> {
         .send()
     {
         Ok(res) if res.status() == reqwest::StatusCode::NO_CONTENT => Ok(()),
-        Ok(res) => Err(res.status().canonical_reason().unwrap_or(res.status().as_str()).to_string()),
+        Ok(res) => Err(res
+            .status()
+            .canonical_reason()
+            .unwrap_or(res.status().as_str())
+            .to_string()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[must_use]
+pub fn send_stamp(post_id: &str, stamp_id: &str) -> Result<(), String> {
+    let endpoint = Url::parse(&format!(
+        "{}/messages/{}/stamps/{}",
+        BASE_URL, post_id, stamp_id
+    ))
+    .unwrap();
+    match Client::new()
+        .post(endpoint)
+        .header(AUTHORIZATION, format!("Bearer {}", &*CLIENT_ACCESS_TOKEN))
+        .send()
+    {
+        Ok(res) if res.status() == reqwest::StatusCode::NO_CONTENT => Ok(()),
+        Ok(res) => Err(res
+            .status()
+            .canonical_reason()
+            .unwrap_or(res.status().as_str())
+            .to_string()),
         Err(e) => Err(e.to_string()),
     }
 }

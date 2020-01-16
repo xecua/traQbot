@@ -1,3 +1,3 @@
 mod guards;
 pub mod handler;
-mod receiver;
+pub mod receiver;

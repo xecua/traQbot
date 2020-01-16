@@ -9,6 +9,7 @@ use crate::database::Database;
 use crate::utils::command::*;
 use crate::utils::sender::send_message;
 use crate::utils::channel::*;
+use crate::utils::passive::*;
 use crate::utils::*;
 
 use log::{debug, error, info, warn};
@@ -53,6 +54,9 @@ pub fn message(
     data: Json<MessageCreated>,
     conn: Database,
 ) -> Status {
+
+    do_passive_action(&data);
+
     if let Err(e) = match parse_command(&data.message.plainText) {
         Some(Command::Help) => {
             use crate::constants::HELP_TEXT;

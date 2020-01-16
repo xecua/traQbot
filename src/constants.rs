@@ -1,4 +1,5 @@
 pub mod arcaea;
+pub mod stamp;
 
 pub const BASE_URL: &'static str = "https://q.trap.jp/api/1.0";
 
