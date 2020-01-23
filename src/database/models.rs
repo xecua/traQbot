@@ -75,6 +75,7 @@ pub struct Song {
     pub title: String,
     pub difficulty: Difficulty,
     pub level_val: i32,
+    pub pack: String,
 }
 
 #[derive(Insertable)]
@@ -83,6 +84,7 @@ pub struct NewSong<'a> {
     pub title: &'a str,
     pub difficulty: &'a Difficulty,
     pub level_val: &'a i32,
+    pub pack: &'a str,
 }
 
 #[derive(Queryable, Debug)]

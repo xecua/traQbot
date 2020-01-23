@@ -11,6 +11,7 @@ table! {
         title -> Varchar,
         difficulty -> Integer,
         level_val -> Integer,
+        pack -> Varchar,
     }
 }
 
